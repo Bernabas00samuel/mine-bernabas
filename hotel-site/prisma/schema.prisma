@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model RoomType {
+  id           String   @id @default(cuid())
+  name         String
+  description  String
+  basePriceCents Int
+  maxGuests    Int
+  bedType      String
+  sizeSqm      Int
+  amenities    Json
+  images       Json
+  rooms        Room[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Room {
+  id         String    @id @default(cuid())
+  roomNumber String    @unique
+  floor      Int
+  typeId     String
+  type       RoomType  @relation(fields: [typeId], references: [id])
+  bookings   Booking[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Booking {
+  id           String   @id @default(cuid())
+  roomId       String
+  room         Room     @relation(fields: [roomId], references: [id])
+  guestName    String
+  guestEmail   String
+  numGuests    Int
+  checkInDate  DateTime
+  checkOutDate DateTime
+  status       BookingStatus @default(PENDING)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([roomId, checkInDate, checkOutDate])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String
+  caption   String
+  createdAt DateTime @default(now())
+}
+
+model Story {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  imageUrl    String
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
