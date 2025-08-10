@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+html, body {
+  @apply bg-zinc-50 text-zinc-900;
+  font-feature-settings: "liga" on, "kern" on;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+}
